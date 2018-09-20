@@ -32,21 +32,14 @@ app.get("/", (req, res) => {
                 summary: ""
             };
 
-            // let link = completeEpisodeInfo.link
 
             axios.get(completeEpisodeInfo.link).then(individualResponse => {
                 const $$ = cheerio.load(individualResponse.data);
                 completeEpisodeInfo.summary = $$(".episode__text-content__article").children("p").text();
 
-                // console.log(completeEpisodeInfo);
 
                 db.Episode.create(completeEpisodeInfo)
-                    .then(dbEpisode => {
-                    // console.log(dbEpisode);
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
+                    .catch(err => console.log(err));
             });
         });
 
@@ -63,13 +56,8 @@ app.get("/home", (req, res) => {
 app.get("/:id", (req, res) => {
     db.Episode.findOne({_id: req.params.id})
         .populate("comments")
-        .then(dbEpisode => {
-            console.log(dbEpisode);
-            res.render("episode", dbEpisode);
-        })
-        .catch(err => {
-            console.log(err);
-        });
+        .then(dbEpisode => res.render("episode", dbEpisode))
+        .catch(err => console.log(err));
 });
 
 app.post("/new-comment/:id", (req, res) => {
@@ -78,15 +66,10 @@ app.post("/new-comment/:id", (req, res) => {
 
     db.Comment.create(commentData)
         .then(dbComment => {
-            console.log(dbComment);
             return db.Episode.findOneAndUpdate({_id: req.params.id}, {$push: {comments: dbComment._id}})
         })
-        .then(dbEpisode => {
-            res.end();
-        })
-        .catch(err => {
-            console.log(err);
-        });
+        .then(dbEpisode => res.end())
+        .catch(err => console.log(err));
 });
 
 app.delete("/:id", (req, res) => {
