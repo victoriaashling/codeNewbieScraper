@@ -7,7 +7,7 @@
     {{#each this.comments}}
         <div class="card">
             <div class="card-head">
-                <button class="btn x-btn" data-comment-id="{{this.id}}"><i class="far fa-times-circle"></i></button>
+                <button class="btn x-btn" id="{{this.id}}"><i class="far fa-times-circle"></i></button>
             </div>
             <div class="card-body">
                 <p>{{this.comment}}</p>
@@ -47,7 +47,12 @@
 
     $(".x-btn").click(function(event) {
         event.preventDefault();
-        let url = "/" + $(".x-btn").data("comment-id");
+        console.log(event);
+
+        let url = "/" + $(this).attr("id");
+        console.log(url);
+        debugger;
+        // try currentTarget, also css z-index
 
         // send to delete call
         $.ajax({
