@@ -4,7 +4,9 @@ const PORT = process.env.PORT || 3000;
 
 const mongoose = require("mongoose");
 const db = require("./models");
-mongoose.connect("mongodb://localhost/newsScraperTest");
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/newsScraperTest";
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI);
 
 const axios = require("axios");
 const cheerio = require("cheerio");
