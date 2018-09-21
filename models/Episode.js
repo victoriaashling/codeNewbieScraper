@@ -11,6 +11,10 @@ const EpisodeSchema = new Schema({
         type: String,
         required: true
     },
+    date: {
+        type: Number,
+        required: false
+    },
     link: {
         type: String,
         required: true

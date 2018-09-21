@@ -21,6 +21,8 @@ app.set("view engine", "handlebars");
 
 app.use(express.static("./public"));
 
+const convertDate = require("./convertDate.js");
+
 
 app.get("/", (req, res) => {
     axios.get("http://www.codenewbie.org/podcast").then(response => {
@@ -38,6 +40,8 @@ app.get("/", (req, res) => {
             axios.get(completeEpisodeInfo.link).then(individualResponse => {
                 const $$ = cheerio.load(individualResponse.data);
                 completeEpisodeInfo.summary = $$(".episode__text-content__article").children("p").text();
+                let date = $$(".episode-header__date").text();
+                completeEpisodeInfo.date = parseInt(convertDate(date));
 
 
                 db.Episode.create(completeEpisodeInfo)
@@ -50,7 +54,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/home", (req, res) => {
-    db.Episode.find({}).then(function(episodes) {
+    db.Episode.find({}).sort({ date: -1 }).then(function(episodes) {
         res.render("index", {episodes: episodes});  
     });
 });
